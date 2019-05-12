@@ -51,9 +51,11 @@ def sigmoid1(x):
 
 
 def initializeweightandbias():
-    global b0, b1, w0, w1, animationweightvectorw0, animationweightvectorw1
+    global b0, b1, w0, w1, animationweightvectorw0, animationweightvectorw1, animationweightvectorfrontendw0, animationweightvectorfrontendw1
     animationweightvectorw0 = []
     animationweightvectorw1 = []
+    animationweightvectorfrontendw0 = []
+    animationweightvectorfrontendw1 = []
     maxValueAnimationArray1 = 0
     minValueAnimationArray1 = 0
     # global  = []
@@ -74,7 +76,6 @@ def initializeweightandbias():
 def neuralnetwork(xvalue, adjustweight):
     global element, w0, w1, b0, b1
     dot1 = np.dot(xvalue, w0)
-    # intermediatelayer0 = []
     intermediatelayer0 = dot1 + b0
     intermediatelayer0 = np.squeeze(np.asarray(intermediatelayer0))
     intermediatelayeroutput0 = []
@@ -82,9 +83,6 @@ def neuralnetwork(xvalue, adjustweight):
         intermediatelayeroutput0.append(sigmoid(element))
     intermediatelayer1 = b1 + np.dot(intermediatelayeroutput0, w1)
     intermediatelayeroutput1 = purelin(intermediatelayer1)
-    # Calculating Sensitivity
-    # if (np.absolute(trainingexample.y - intermediatelayeroutput1) < 0.00001):
-    # breakloop = False
     if adjustweight == 1:
         adjustweights(xvalue, referencefunction(xvalue), intermediatelayeroutput0, intermediatelayeroutput1)
     elif adjustweight == 2:
@@ -103,7 +101,9 @@ def adjustweights(xvalue, yvalue, intermediatelayeroutput0, intermediatelayerout
     # Adjust weights
     w0 = w0 - learningrate * np.dot(s0, xvalue)
     animationweightvectorw0.append(np.asarray(w0).flatten())
+    animationweightvectorfrontendw0.append(Example(np.asarray(w0).flatten()[0], np.asarray(w0).flatten()[1]))
     w1 = w1 - learningrate * np.dot(s1, intermediatelayeroutput0)
+    animationweightvectorfrontendw1.append(Example(np.asarray(w1).flatten()[0], np.asarray(w0).flatten()[1]))
     animationweightvectorw1.append(w1)
     b0 = b0 - learningrate * s0
     b1 = b1 - learningrate * s1
@@ -225,22 +225,22 @@ def animateTraining():
     # ax2.set_ylim(-40, 1000)
 
     # DO NOT DELETE small trainingweights
+    ax1.set_ylim(-10, 10)
     # ax1.set_ylim(-10, 10)
-    # ax1.set_ylim(-10, 10)
-    # ax1.set_xlim(-10,10)
-    # ax2.set_xlim(-10,10)
-    # ax2.set_ylim(-10,10)
-    ax1.set_ylim(0, 2.5)
-    ax1.set_xlim(0, 2.5)
-    ax1.xaxis.set_ticks(np.arange(0,2.5,0.1))
-    ax1.yaxis.set_ticks(np.arange(0,2.5,0.1))
+    ax1.set_xlim(-10,10)
+    ax2.set_xlim(-10,10)
+    ax2.set_ylim(-10,10)
+    # ax1.set_ylim(0, 2.5)
+    # ax1.set_xlim(0, 2.5)
+    # ax1.xaxis.set_ticks(np.arange(0,2.5,0.1))
+    # ax1.yaxis.set_ticks(np.arange(0,2.5,0.1))
     # # ax1.set_ylim(0, 2.5)
     #
     #
-    ax2.set_xlim(0, 2.5)
-    ax2.xaxis.set_ticks(np.arange(0,2.5,0.5))
-    ax2.set_ylim(0, 2.5)
-    ax2.yaxis.set_ticks(np.arange(0,2.5,0.5))
+    # ax2.set_xlim(0, 2.5)
+    # ax2.xaxis.set_ticks(np.arange(0,2.5,0.5))
+    # ax2.set_ylim(0, 2.5)
+    # ax2.yaxis.set_ticks(np.arange(0,2.5,0.5))
     ax1.set_yticklabels([])
     ax2.set_yticklabels([])
     ax1.set_xticklabels([])
@@ -257,10 +257,11 @@ def startNeuralNetwork():
     init()
     trainNetwork()
     # animateTraining()
-    return animationarrayfinal, animationarrayreference;
+    return animationarrayfinal, animationarrayreference, animationweightvectorfrontendw0, animationweightvectorfrontendw1;
 
 
 if __name__ == "__main__":
     startNeuralNetwork()
 # else:
 #     startNeuralNetwork();
+# startNeuralNetwork();

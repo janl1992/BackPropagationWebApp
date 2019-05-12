@@ -16,27 +16,35 @@ class ExampleEncoder(js.JSONEncoder):
             return obj.__dict__
         return js.JSONEncoder.default(self, obj)
 class MyRequestHandler(BaseHTTPRequestHandler):
+
+
     def do_GET(self):
         if self.path == '/multilayerperceptron':
-            # mp.startNeuralNetwork();
-            animationarray, animationarrayreference = startNeuralNetwork()
+            animationarray, animationarrayreference, weightarray0, weightarray1 = startNeuralNetwork()
             jsonanimationarray = js.dumps(animationarray, cls=ExampleEncoder)
-            self.send_response(200)
-            self.send_header('Content-type', 'text/json')
-            self.end_headers()
-            self.wfile.write(jsonanimationarray.encode('utf-8'))
-            # self.wfile.close()
+            self.prepareResponse(jsonanimationarray)
             return
-            # print(animationarray)
         if self.path == '/getreference':
-            animationarray, animationarrayreference = startNeuralNetwork()
+            animationarray, animationarrayreference, weightarray0, weightarray1 = startNeuralNetwork()
             jsonfinalanimationarray = js.dumps(animationarrayreference[0], cls=ExampleEncoder)
-            self.send_response(200)
-            self.send_header('Content-type', 'text/json')
-            self.end_headers()
-            self.wfile.write(jsonfinalanimationarray.encode('utf-8'))
-            # self.wfile.close()
+            self.prepareResponse(jsonfinalanimationarray)
             return
+        if self.path == '/getweights0':
+            animationarray, animationarrayreference, weightarray0, weightarray1 = startNeuralNetwork()
+            jsonfinalanimationarray = js.dumps(weightarray0, cls=ExampleEncoder)
+            self.prepareResponse(jsonfinalanimationarray)
+            return
+        if self.path == '/getweights1':
+            animationarray, animationarrayreference, weightarray0, weightarray1 = startNeuralNetwork()
+            jsonfinalanimationarray = js.dumps(weightarray1, cls=ExampleEncoder)
+            self.prepareResponse(jsonfinalanimationarray)
+            return
+
+    def prepareResponse(self, jsonfinalanimationarray):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/json')
+        self.end_headers()
+        self.wfile.write(jsonfinalanimationarray.encode('utf-8'))
 
 
 address = ("127.0.0.1", 8080)

@@ -1,0 +1,11 @@
+version: "2.1"
+services:
+ webclient: 
+  image: backpropagationapp
+  ports: 
+   - "3000:3000"
+ backend:
+  image: webserver
+  ports:
+   - 8080:8080 
+  
